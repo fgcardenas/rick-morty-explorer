@@ -27,6 +27,9 @@ export default function CharactersScreen() {
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  // Actualizar con el gesto es distinto de la carga inicial: la lista sigue
+  // visible y solo se muestra el indicador nativo.
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     async function loadFirstPage() {
@@ -51,7 +54,7 @@ export default function CharactersScreen() {
     // No tiene sentido pedir más si ya hay una carga en curso o si la API
     // dijo que no hay más páginas. Sin esto, onEndReached dispararía
     // peticiones repetidas de la misma página y habría personajes duplicados.
-    if (loading || loadingMore || !hasNextPage) return;
+    if (loading || loadingMore || refreshing || !hasNextPage) return;
 
     setLoadingMore(true);
     setError(null);
@@ -67,6 +70,22 @@ export default function CharactersScreen() {
       setError(getErrorMessage(e));
     } finally {
       setLoadingMore(false);
+    }
+  }
+
+  async function refresh() {
+    setRefreshing(true);
+    setError(null);
+    try {
+      const { results, hasNextPage } = await getCharacters({ page: 1 });
+      // Reemplaza toda la lista y reinicia la paginación.
+      setCharacters(results);
+      setPage(1);
+      setHasNextPage(hasNextPage);
+    } catch (e) {
+      setError(getErrorMessage(e));
+    } finally {
+      setRefreshing(false);
     }
   }
 
@@ -103,6 +122,8 @@ export default function CharactersScreen() {
         ItemSeparatorComponent={ItemSeparator}
         ListEmptyComponent={<StateMessage message="No hay personajes que mostrar." />}
         ListFooterComponent={renderFooter}
+        refreshing={refreshing}
+        onRefresh={refresh}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         contentContainerStyle={styles.listContent}

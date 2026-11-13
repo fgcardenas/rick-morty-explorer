@@ -68,7 +68,7 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 **¿Por qué usé un estado distinto (`refreshing`) y no el mismo de la carga inicial?**
 
-> 
+> Porque se ven distinto. En la carga inicial se reemplaza toda la pantalla por un spinner grande (`loading`); al actualizar con el gesto la lista debe seguir visible y solo se muestra el indicador nativo arriba. Si usara el mismo estado, la lista desaparecería en pleno gesto y el `FlatList` se desmontaría. Además me permite saber exactamente cuándo bloquear "cargar más" mientras se actualiza.
 
 ## Paso 10 · Búsqueda
 
