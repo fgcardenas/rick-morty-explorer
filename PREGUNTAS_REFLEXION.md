@@ -56,7 +56,7 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 **¿Por qué es mejor mostrar un mensaje con un botón "Reintentar" que dejar la pantalla vacía?**
 
-> 
+> Una pantalla vacía no le dice al usuario si la app falló, si sigue cargando o si de verdad no hay datos, y la única salida es cerrar y volver a abrir la app. Con el mensaje entiende qué pasó (por ejemplo, que no hay conexión) y con el botón puede resolverlo en un toque cuando vuelva la red.
 
 ## Paso 8 · Paginación
 
