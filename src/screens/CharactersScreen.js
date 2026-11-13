@@ -22,17 +22,21 @@ export default function CharactersScreen() {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Contador que sube con cada "Reintentar": como está en las dependencias del
-  // efecto, cambiarlo hace que la carga inicial se ejecute otra vez.
   const [reloadKey, setReloadKey] = useState(0);
+  // Paginación: página que ya tengo, si la API tiene otra y si estoy pidiéndola.
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     async function loadFirstPage() {
       setLoading(true);
       setError(null);
       try {
-        const { results } = await getCharacters({ page: 1 });
+        const { results, hasNextPage } = await getCharacters({ page: 1 });
         setCharacters(results);
+        setPage(1);
+        setHasNextPage(hasNextPage);
       } catch (e) {
         setError(getErrorMessage(e));
       } finally {
@@ -42,6 +46,39 @@ export default function CharactersScreen() {
 
     loadFirstPage();
   }, [reloadKey]);
+
+  async function loadMore() {
+    // No tiene sentido pedir más si ya hay una carga en curso o si la API
+    // dijo que no hay más páginas. Sin esto, onEndReached dispararía
+    // peticiones repetidas de la misma página y habría personajes duplicados.
+    if (loading || loadingMore || !hasNextPage) return;
+
+    setLoadingMore(true);
+    setError(null);
+    try {
+      const nextPage = page + 1;
+      const { results, hasNextPage: more } = await getCharacters({ page: nextPage });
+      // Arreglo nuevo: los anteriores se conservan y los nuevos van al final.
+      setCharacters((current) => [...current, ...results]);
+      setPage(nextPage);
+      setHasNextPage(more);
+    } catch (e) {
+      // El error se guarda sin borrar los personajes ya cargados.
+      setError(getErrorMessage(e));
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  function renderFooter() {
+    if (loadingMore) {
+      return <ActivityIndicator style={styles.footer} color={COLORS.primary} />;
+    }
+    if (error) {
+      return <Text style={styles.footerError}>{error}</Text>;
+    }
+    return null;
+  }
 
   function renderContent() {
     if (loading) {
@@ -65,6 +102,9 @@ export default function CharactersScreen() {
         keyExtractor={(item) => String(item.id)}
         ItemSeparatorComponent={ItemSeparator}
         ListEmptyComponent={<StateMessage message="No hay personajes que mostrar." />}
+        ListFooterComponent={renderFooter}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
         contentContainerStyle={styles.listContent}
       />
     );

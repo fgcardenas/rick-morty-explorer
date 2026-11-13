@@ -62,7 +62,7 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 **¿Qué problema aparece si la función de "cargar más" se dispara varias veces seguidas? ¿Cómo lo evité?**
 
-> 
+> `onEndReached` puede dispararse varias veces mientras el usuario está cerca del final y antes de que llegue la respuesta anterior. Si cada disparo pide `page + 1` con el mismo valor de `page`, se baja la misma página repetida veces y se agregan los mismos personajes duplicados (con `key` repetida). Lo evité con un "guardia" al inicio de `loadMore`: si ya estoy cargando (inicial, más elementos o actualizando) o si la API dijo que no hay más páginas, la función retorna sin pedir nada. El estado `loadingMore` se activa antes del `await`, así el segundo disparo ya lo encuentra en verdadero.
 
 ## Paso 9 · Pull to refresh
 
