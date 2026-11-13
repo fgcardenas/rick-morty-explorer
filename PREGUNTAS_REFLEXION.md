@@ -26,7 +26,7 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 **¿Por qué guardo los personajes en estado y no en una variable normal?**
 
-> 
+> Porque React solo vuelve a dibujar la pantalla cuando cambia un estado (o una prop). Una variable normal se reinicia en cada render y, aunque cambie su valor, React no se entera, así que la lista nunca se actualizaría al llegar los datos de la API. Con `useState` el valor se conserva entre renders y `setCharacters` avisa que hay que redibujar.
 
 ## Paso 4 · useEffect
 
