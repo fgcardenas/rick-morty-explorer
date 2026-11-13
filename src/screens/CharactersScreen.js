@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { getCharacters } from '../services/charactersService';
+import CharacterCard from '../components/CharacterCard';
 import { COLORS } from '../config/constants';
 
 export default function CharactersScreen() {
@@ -8,9 +9,6 @@ export default function CharactersScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Primera carga: solo al montar la pantalla (arreglo de dependencias vacío).
-  // La función del efecto no puede ser async (React espera una función de
-  // limpieza o nada), así que declaro una async adentro y la llamo.
   useEffect(() => {
     async function loadFirstPage() {
       try {
@@ -30,7 +28,12 @@ export default function CharactersScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Rick and Morty</Text>
 
-      <Text style={styles.placeholder}>Aquí aparecerá la lista de personajes.</Text>
+      <FlatList
+        data={characters}
+        renderItem={({ item }) => <CharacterCard character={item} />}
+        keyExtractor={(item) => String(item.id)}
+        contentContainerStyle={styles.listContent}
+      />
     </View>
   );
 }
@@ -58,5 +61,4 @@ const styles = StyleSheet.create({
   listContent: { paddingBottom: 24 },
   footer: { marginVertical: 16 },
   footerError: { color: COLORS.danger, textAlign: 'center', marginVertical: 16 },
-  placeholder: { color: COLORS.textMuted, fontSize: 16, marginTop: 24 },
 });
