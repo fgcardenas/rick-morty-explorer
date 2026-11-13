@@ -74,15 +74,15 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 1. **¿Qué es el debounce y qué problema resuelve?**
 
-> 
+> Es esperar a que el usuario deje de escribir un momento (500 ms aquí) antes de ejecutar la acción. Sin él, cada letra de "rick" lanzaría una petición (r, ri, ric, rick): cuatro peticiones, tres de ellas inútiles, que además saturan la API y hacen parpadear la lista. Con debounce se hace una sola petición con el texto final.
 
 2. **¿Para qué sirve la función de limpieza (cleanup) que se devuelve en un `useEffect`? Da un ejemplo de esta práctica.**
 
-> 
+> Se ejecuta antes de que el efecto vuelva a correr y cuando el componente se desmonta, y sirve para deshacer lo que el efecto dejó pendiente (temporizadores, suscripciones, peticiones en curso). En esta práctica: el efecto del debounce programa un `setTimeout` y devuelve `() => clearTimeout(timer)`; cuando el usuario teclea otra letra, React corre la limpieza del efecto anterior y el temporizador viejo se cancela sin llegar a ejecutarse. En la carga inicial uso la limpieza para invalidar la petición que sigue en camino.
 
 3. **Si el usuario escribe rápido y las respuestas llegan en desorden, ¿qué podría salir mal?**
 
-> 
+> Que una respuesta vieja y lenta llegue **después** de la más reciente y la pise: por ejemplo, busco "ri" y luego "rick", la respuesta de "rick" llega primero y la de "ri" después, y la pantalla termina mostrando resultados de "ri" aunque el cuadro diga "rick". Lo resolví con un número de petición (`requestId`, un `useRef`): cada búsqueda nueva lo incrementa y, al llegar una respuesta, solo se usa si su número sigue siendo el vigente; si no, se descarta.
 
 ## Cierre
 
