@@ -15,6 +15,9 @@ function getErrorMessage(error) {
   return error.message;
 }
 
+// Fuera del componente para que no se cree una función nueva en cada render.
+const ItemSeparator = () => <View style={styles.separator} />;
+
 export default function CharactersScreen() {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,6 +63,8 @@ export default function CharactersScreen() {
         data={characters}
         renderItem={({ item }) => <CharacterCard character={item} />}
         keyExtractor={(item) => String(item.id)}
+        ItemSeparatorComponent={ItemSeparator}
+        ListEmptyComponent={<StateMessage message="No hay personajes que mostrar." />}
         contentContainerStyle={styles.listContent}
       />
     );
