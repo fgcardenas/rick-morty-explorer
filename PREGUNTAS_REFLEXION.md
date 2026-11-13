@@ -88,4 +88,5 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 **Menciona dos mejoras que le harías a la app si tuvieras una hora más:**
 
-> 
+> 1. Cancelar de verdad la petición anterior con `AbortController` cuando cambia la búsqueda (hoy la descarto al llegar, pero igual viaja por la red), que es el reto A.
+> 2. Envolver `CharacterCard` en `React.memo` (reto C) y agregar una pantalla de detalle que pida `/character/{id}` en un `useEffect` que dependa del `id` (reto D), además de un filtro por estado (reto E).
