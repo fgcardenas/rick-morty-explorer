@@ -1,13 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { getCharacters } from '../services/charactersService';
 import { COLORS } from '../config/constants';
 
 export default function CharactersScreen() {
-  // Lo que cambia con el tiempo y obliga a redibujar la pantalla.
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Primera carga: solo al montar la pantalla (arreglo de dependencias vacío).
+  // La función del efecto no puede ser async (React espera una función de
+  // limpieza o nada), así que declaro una async adentro y la llamo.
+  useEffect(() => {
+    async function loadFirstPage() {
+      try {
+        const { results } = await getCharacters({ page: 1 });
+        setCharacters(results);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadFirstPage();
+  }, []);
 
   return (
     <View style={styles.container}>

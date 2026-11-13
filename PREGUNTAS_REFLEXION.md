@@ -32,15 +32,15 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 1. **¿Qué pasa si omito por completo el arreglo de dependencias?**
 
-> 
+> El efecto se ejecuta después de **cada** render. Como dentro del efecto cambio estados (`setCharacters`, `setLoading`), eso provoca otro render, que vuelve a ejecutar el efecto y así en bucle infinito de peticiones a la API.
 
 2. **¿Qué significa dejar el arreglo vacío?**
 
-> 
+> Que el efecto no depende de ningún valor de la pantalla, así que React lo ejecuta una sola vez, justo después del primer render (al montar). Es lo que quiero para la primera carga.
 
 3. **¿Por qué la función que recibe `useEffect` no debe ser `async` directamente?**
 
-> 
+> Porque una función `async` siempre devuelve una promesa, y React espera que lo que devuelve el efecto sea `undefined` o una función de limpieza. Una promesa no se puede llamar como limpieza y React avisa del error. Por eso declaro una función `async` dentro del efecto y la llamo, dejando el efecto en sí como una función normal.
 
 ## Paso 5 · FlatList
 
