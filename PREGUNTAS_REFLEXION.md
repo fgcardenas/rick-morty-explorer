@@ -20,7 +20,7 @@ _Escribe tus respuestas debajo de cada pregunta._
 
 **¿Qué diferencia hay entre que `fetch` "falle" y que el servidor responda con un error? ¿Qué debo revisar en la respuesta?**
 
-> 
+> `fetch` solo rechaza su promesa cuando no se pudo completar la comunicación (sin internet, DNS caído, servidor inalcanzable). Si el servidor responde, aunque sea con un 404 o un 500, la promesa se cumple igual, porque técnicamente sí hubo respuesta. Por eso tengo que revisar `response.ok` (verdadero solo con códigos 200-299) y `response.status` para el código. En mi servicio el 404 de la búsqueda sin coincidencias lo trato como "sin resultados" y cualquier otro código que no sea exitoso lanza un `Error` con el número recibido.
 
 ## Paso 3 · Estado
 
